@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint</title>
+</head>
+<body>
+    <canvas width="600" height="400"></canvas>
+    <script>
+        var pantalla = document.querySelector('canvas');
+        var pincel = pantalla.getContext('2d');
+        var puedoDibujar = false;
+        var paleta=["red","green","blue"];
+        var color_seleccionado = "blue";
+        var desplazamiento=0;
+    
+        pincel.fillStyle = 'grey';
+        pincel.fillRect(0, 0, 600, 400);
+    
+    
+        function dibujarCirculo(evento) {
+
+            var x = evento.pageX - pantalla.offsetLeft;
+            var y = evento.pageY - pantalla.offsetTop;
+            if(puedoDibujar && ((x>desplazamiento+5) || (y>50+5))) {
+                pincel.fillStyle = color_seleccionado;
+                pincel.beginPath();
+                pincel.arc(x, y, 5, 0, 2 * Math.PI);
+                pincel.fill();
+            }
+    
+        }
+    
+        function habilitarDibujar(evento) {
+
+            var test_x=evento.pageX-pantalla.offsetLeft;
+            var test_y=evento.pageY-pantalla.offsetTop;
+            if((test_x<desplazamiento)&&(test_y<50)){
+                color_seleccionado = paleta[parseInt(test_x / 50)];
+            }
+            puedoDibujar = true;
+        }
+    
+        function deshabilitarDibujar() {
+    
+            puedoDibujar = false;
+        }
+
+        function crear_paleta(){
+            
+            for(var color of paleta){
+                pincel.fillStyle = color;
+                pincel.fillRect(0+desplazamiento, 0, 50, 50);
+                desplazamiento+=50;
+            }
+        }
+
+        crear_paleta();
+        pantalla.onmousemove = dibujarCirculo;
+        pantalla.onmousedown = habilitarDibujar;
+        pantalla.onmouseup = deshabilitarDibujar;
+    
+    </script>
+</body>
+</html>
